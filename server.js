@@ -75,12 +75,13 @@ app.post("/api/create-payment-session", async (req, res) => {
       
       // Add logging to debug URL construction
       success_url: (() => {
-        // Force HTTPS for payment processor security requirements
+        // Force HTTPS and follow Checkout.com's URL format requirements
         const protocol = 'https';
         const host = req.get('host');
+        // Simplified URL format without .html extension
         const successUrl = brand 
-          ? `${protocol}://${host}/success.html?brand=${brand}` 
-          : `${protocol}://${host}/success.html`;
+          ? `${protocol}://${host}/success?brand=${brand}` 
+          : `${protocol}://${host}/success`;
         console.log('Debug - Protocol (forced https):', protocol);
         console.log('Debug - Host:', host);
         console.log('Debug - Brand:', brand);
@@ -89,12 +90,13 @@ app.post("/api/create-payment-session", async (req, res) => {
       })(),
       
       failure_url: (() => {
-        // Force HTTPS for payment processor security requirements
+        // Force HTTPS and follow Checkout.com's URL format requirements
         const protocol = 'https';
         const host = req.get('host');
+        // Simplified URL format without .html extension
         const failureUrl = brand 
-          ? `${protocol}://${host}/index.html?brand=${brand}` 
-          : `${protocol}://${host}/index.html`;
+          ? `${protocol}://${host}/failure?brand=${brand}` 
+          : `${protocol}://${host}/failure`;
         console.log('Debug - Generated failure_url:', failureUrl);
         return failureUrl;
       })(),
@@ -217,6 +219,18 @@ app.get("/api/latest-payment-response", (req, res) => {
   } else {
     res.status(404).json({ error: "No payment response available" });
   }
+});
+
+// Handle success redirect
+app.get("/success", (req, res) => {
+  const brand = req.query.brand || '';
+  res.sendFile(path.join(__dirname, "public", "success.html"));
+});
+
+// Handle failure redirect
+app.get("/failure", (req, res) => {
+  const brand = req.query.brand || '';
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 // Serve the landing page
