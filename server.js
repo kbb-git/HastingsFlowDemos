@@ -75,12 +75,13 @@ app.post("/api/create-payment-session", async (req, res) => {
       
       // Add logging to debug URL construction
       success_url: (() => {
-        const protocol = req.protocol;
+        // Force HTTPS for payment processor security requirements
+        const protocol = 'https';
         const host = req.get('host');
         const successUrl = brand 
           ? `${protocol}://${host}/success.html?brand=${brand}` 
           : `${protocol}://${host}/success.html`;
-        console.log('Debug - Protocol:', protocol);
+        console.log('Debug - Protocol (forced https):', protocol);
         console.log('Debug - Host:', host);
         console.log('Debug - Brand:', brand);
         console.log('Debug - Generated success_url:', successUrl);
@@ -88,9 +89,12 @@ app.post("/api/create-payment-session", async (req, res) => {
       })(),
       
       failure_url: (() => {
+        // Force HTTPS for payment processor security requirements
+        const protocol = 'https';
+        const host = req.get('host');
         const failureUrl = brand 
-          ? `${req.protocol}://${req.get('host')}/index.html?brand=${brand}` 
-          : `${req.protocol}://${req.get('host')}/index.html`;
+          ? `${protocol}://${host}/index.html?brand=${brand}` 
+          : `${protocol}://${host}/index.html`;
         console.log('Debug - Generated failure_url:', failureUrl);
         return failureUrl;
       })(),
