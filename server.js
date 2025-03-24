@@ -72,8 +72,29 @@ app.post("/api/create-payment-session", async (req, res) => {
         email: customer && customer.email ? customer.email : "john.doe@example.com",
         name: customer && customer.name ? customer.name : "John Doe"
       },
-      success_url: brand ? `${req.protocol}://${req.get('host')}/success.html?brand=${brand}` : `${req.protocol}://${req.get('host')}/success.html`,
-      failure_url: brand ? `${req.protocol}://${req.get('host')}/index.html?brand=${brand}` : `${req.protocol}://${req.get('host')}/index.html`,
+      
+      // Add logging to debug URL construction
+      success_url: (() => {
+        const protocol = req.protocol;
+        const host = req.get('host');
+        const successUrl = brand 
+          ? `${protocol}://${host}/success.html?brand=${brand}` 
+          : `${protocol}://${host}/success.html`;
+        console.log('Debug - Protocol:', protocol);
+        console.log('Debug - Host:', host);
+        console.log('Debug - Brand:', brand);
+        console.log('Debug - Generated success_url:', successUrl);
+        return successUrl;
+      })(),
+      
+      failure_url: (() => {
+        const failureUrl = brand 
+          ? `${req.protocol}://${req.get('host')}/index.html?brand=${brand}` 
+          : `${req.protocol}://${req.get('host')}/index.html`;
+        console.log('Debug - Generated failure_url:', failureUrl);
+        return failureUrl;
+      })(),
+      
       capture: true,
       locale: locale || "en-GB",
       processing_channel_id: processingChannelId,
@@ -88,6 +109,8 @@ app.post("/api/create-payment-session", async (req, res) => {
     };
 
     // Call Checkout.com API to create the payment session
+    console.log('Debug - Complete session request:', JSON.stringify(sessionRequest, null, 2));
+    
     const response = await axios.post(
       "https://api.sandbox.checkout.com/payment-sessions",
       sessionRequest,
@@ -110,6 +133,12 @@ app.post("/api/create-payment-session", async (req, res) => {
       response: error.response?.data,
       status: error.response?.status
     });
+    
+    // Add more detailed error logging
+    if (error.response && error.response.data) {
+      console.error("Detailed error response:", JSON.stringify(error.response.data, null, 2));
+    }
+    
     res.status(500).json({
       error: "Failed to create payment session",
       details: error.response?.data || error.message
