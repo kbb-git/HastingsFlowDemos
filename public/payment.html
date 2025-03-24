@@ -1,0 +1,1619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment - Checkout.com Flow Designs for Hastings Direct</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Raleway:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500;700&family=PT+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&family=Lato:wght@300;400;700&family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&family=Oswald:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Include Checkout.com Web Components library -->
+  <script src="https://checkout-web-components.checkout.com/index.js"></script>
+
+  <style>
+    :root {
+      --primary-blue: #003366;
+      --accent-red: #e5322d;
+      --light-gray: #f8f9fa;
+      --text-dark: #333333;
+      --text-light: #6c757d;
+      --white: #ffffff;
+      --shadow-sm: rgba(0, 0, 0, 0.05);
+      --shadow-md: rgba(0, 0, 0, 0.1);
+      --shadow-lg: rgba(0, 0, 0, 0.15);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+    }
+    
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--light-gray);
+      color: var(--text-dark);
+      padding-top: 2rem;
+      line-height: 1.6;
+    }
+    
+    .payment-container {
+      background-color: var(--white);
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 30px var(--shadow-md);
+      padding: 2.5rem;
+      margin-bottom: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .payment-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(to right, var(--accent-red), var(--primary-blue));
+    }
+    
+    .flow-container {
+      min-height: 320px;
+      background-color: var(--white);
+      border-radius: var(--radius-sm);
+      padding: 25px;
+      margin-bottom: 25px;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .error-message {
+      display: none;
+      color: #dc2626;
+      padding: 16px;
+      margin-top: 20px;
+      border-left: 4px solid #dc2626;
+      background-color: rgba(220, 38, 38, 0.05);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    
+    .product-info {
+      margin-bottom: 30px;
+      padding: 25px;
+      border-radius: var(--radius-md);
+      box-shadow: 0 5px 20px var(--shadow-sm);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .product-info:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px var(--shadow-md);
+    }
+    
+    .product-title {
+      margin-top: 0;
+      font-weight: 600;
+      padding-bottom: 10px;
+      position: relative;
+    }
+    
+    .product-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 40px;
+      height: 3px;
+      background-color: currentColor;
+      border-radius: 50px;
+    }
+    
+    .product-price {
+      font-size: 28px;
+      font-weight: 700;
+      margin: 15px 0;
+    }
+    
+    .product-description {
+      color: var(--text-light);
+      margin-bottom: 20px;
+    }
+    
+    .price-details {
+      background: rgba(0, 0, 0, 0.02);
+      padding: 15px;
+      border-radius: var(--radius-sm);
+      margin-top: 20px;
+    }
+    
+    .price-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0;
+    }
+    
+    .price-total {
+      font-weight: 700;
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+      padding-top: 10px;
+      margin-top: 5px;
+    }
+    
+    .brand-logo {
+      max-height: 60px;
+      margin-bottom: 1.5rem;
+      transition: transform 0.3s ease;
+    }
+    
+    header:hover .brand-logo {
+      transform: scale(1.05);
+    }
+
+    /* Brand-specific styles will be injected via JavaScript */
+    
+    footer {
+      margin-top: 5rem;
+      padding: 3rem 0;
+      color: white;
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+    }
+
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 300px;
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(0, 0, 0, 0.05);
+      border-radius: 50%;
+      border-top-color: var(--primary-blue);
+      animation: spin 1s infinite ease-in-out;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .breadcrumb-section {
+      margin-bottom: 2.5rem;
+    }
+
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      color: var(--text-light);
+      text-decoration: none;
+      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+
+    .back-button:hover {
+      color: var(--text-dark);
+      transform: translateX(-3px);
+    }
+
+    .back-button svg {
+      margin-right: 0.5rem;
+      transition: transform 0.3s ease;
+    }
+    
+    .back-button:hover svg {
+      transform: translateX(-3px);
+    }
+    
+    .page-header {
+      margin-bottom: 3rem;
+      text-align: center;
+      position: relative;
+    }
+    
+    .page-title {
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+    }
+    
+    .page-subtitle {
+      color: var(--text-light);
+      font-weight: 500;
+    }
+    
+    .secure-badge {
+      display: inline-flex;
+      align-items: center;
+      background-color: rgba(0, 0, 0, 0.03);
+      padding: 8px 15px;
+      border-radius: 50px;
+      font-size: 14px;
+      color: var(--text-light);
+      margin-top: 15px;
+    }
+    
+    .secure-badge i {
+      margin-right: 8px;
+      color: #10b981;
+    }
+    
+    /* Animation for page elements */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .animate-fadeInUp {
+      animation: fadeInUp 0.6s ease-out forwards;
+    }
+    
+    .animate-fadeIn {
+      animation: fadeIn 0.8s ease-out forwards;
+    }
+    
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+    
+    .footer-content {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .footer-divider {
+      width: 60px;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.3);
+      margin: 1.5rem auto;
+      border-radius: 50px;
+    }
+    
+    .copyright {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+    
+    .help-text {
+      font-size: 0.85rem;
+      color: var(--text-light);
+      margin-top: 1.5rem;
+    }
+    
+    .help-link {
+      color: inherit;
+      text-decoration: underline;
+      transition: color 0.3s ease;
+    }
+    
+    .help-link:hover {
+      color: var(--primary-blue);
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="app-container">
+    <div class="breadcrumb-section animate-fadeInUp">
+      <a href="/" class="back-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+        </svg>
+        Back to brand selection
+      </a>
+    </div>
+
+    <header class="page-header animate-fadeInUp delay-1">
+      <div id="brand-logo-container" class="text-center">
+        <!-- Logo will be inserted here dynamically -->
+      </div>
+      <h1 id="brand-header" class="page-title">Payment</h1>
+      <p id="brand-tagline" class="page-subtitle">Complete your payment securely</p>
+      <div class="secure-badge">
+        <i class="fas fa-lock"></i> Secure, encrypted payment
+      </div>
+    </header>
+
+    <div class="row animate-fadeInUp delay-2">
+      <div class="col-lg-7 mb-4">
+        <div class="payment-container">
+          <h3 class="mb-4">Payment Details</h3>
+          <div id="flow-container" class="flow-container loading">
+            <div class="loading-spinner"></div>
+          </div>
+          <div id="error-message" class="error-message"></div>
+          <div class="help-text text-center">
+            Having trouble? <a href="#" class="help-link">Contact support</a> or call us at 0800 123 4567
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-5 animate-fadeInUp delay-3">
+        <div class="product-info" id="product-info">
+          <h2 class="product-title">Car Insurance</h2>
+          <p class="product-price">£349.99</p>
+          <p class="product-description">Annual car insurance policy with comprehensive coverage and 24/7 roadside assistance.</p>
+          
+          <div class="price-details">
+            <div class="price-row">
+              <span>Subtotal</span>
+              <span>£349.99</span>
+            </div>
+            <div class="price-row">
+              <span>Tax</span>
+              <span>£0.00</span>
+            </div>
+            <div class="price-row price-total">
+              <span>Total</span>
+              <span>£349.99</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="text-center animate-fadeIn" id="brand-footer">
+    <div class="container">
+      <div class="footer-content">
+        <p>We value your security. All payments are processed through Checkout.com's secure payment system.</p>
+        <div class="footer-divider"></div>
+        <p class="copyright mb-0">© 2025 Hastings Direct.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Brand configurations
+    const brandConfigurations = {
+      'hastings-direct': {
+        name: 'Hastings Direct',
+        logo: './images/hastings-direct.png',
+        tagline: 'Simple and straightforward insurance',
+        colors: {
+          primary: '#e42726', // Red from Hastings logo
+          secondary: '#226cb4', // Blue from DIRECT text
+          background: '#ffffff',
+          text: '#333333',
+          footer: '#226cb4'
+        },
+        checkout: {
+          colorPrimary: '#226cb4',
+          colorBackground: '#ffffff',
+          colorText: '#333333',
+          colorDanger: '#e42726',
+          borderRadius: '0.5rem',
+          fonts: {
+            primary: "'Montserrat', sans-serif",
+            weight: 600
+          }
+        }
+      },
+      'hastings-premier': {
+        name: 'Hastings Premier',
+        logo: './images/hastings-premier.png',
+        tagline: 'Premium insurance for discerning customers',
+        colors: {
+          primary: '#e42726', // Red from Hastings logo
+          secondary: '#e6a43b', // Gold from PREMIER text
+          background: '#f8f9fa',
+          text: '#212121',
+          footer: '#1a237e'
+        },
+        checkout: {
+          colorPrimary: '#e6a43b',
+          colorBackground: '#ffffff',
+          colorText: '#212121',
+          colorDanger: '#e42726',
+          borderRadius: '0.75rem',
+          fonts: {
+            primary: "'Montserrat', sans-serif",
+            weight: 700
+          }
+        }
+      },
+      'hastings-essential': {
+        name: 'Hastings Essential',
+        logo: './images/hastings-essential.png',
+        tagline: 'Basic, no-frills insurance coverage',
+        colors: {
+          primary: '#e42726', // Red from Hastings logo
+          secondary: '#e42726', // Red from ESSENTIAL text
+          background: '#f5f5f5',
+          text: '#333333',
+          footer: '#e42726'
+        },
+        checkout: {
+          colorPrimary: '#e42726',
+          colorBackground: '#ffffff',
+          colorText: '#333333',
+          colorDanger: '#b71c1c',
+          borderRadius: '0.25rem',
+          fonts: {
+            primary: "'Roboto', sans-serif",
+            weight: 400
+          }
+        }
+      },
+      'hastings-youdrive': {
+        name: 'Hastings YouDrive',
+        logo: './images/hastings-youdrive.png',
+        tagline: 'Drive less, pay less with our telematics policy',
+        colors: {
+          primary: '#e42726', // Red from Hastings/you
+          secondary: '#2273bc', // Blue from drive
+          background: '#f1f8e9',
+          text: '#333333',
+          footer: '#226cb4'
+        },
+        checkout: {
+          colorPrimary: '#2273bc',
+          colorBackground: '#ffffff',
+          colorText: '#333333',
+          colorDanger: '#e42726',
+          borderRadius: '0.5rem',
+          fonts: {
+            primary: "'Montserrat', sans-serif",
+            weight: 500
+          }
+        }
+      },
+      'insurepink': {
+        name: 'InsurePink',
+        logo: './images/insurepink.png',
+        tagline: 'Insurance that gives back to breast cancer research',
+        colors: {
+          primary: '#d43b95', // Magenta from InsurePink logo
+          secondary: '#eb75b5', // Lighter pink from Pink text
+          background: '#fef4f9',
+          text: '#333333',
+          footer: '#d43b95'
+        },
+        checkout: {
+          colorPrimary: '#d43b95',
+          colorBackground: '#ffffff',
+          colorText: '#333333',
+          colorDanger: '#c62828',
+          borderRadius: '1rem',
+          fonts: {
+            primary: "'Quicksand', sans-serif",
+            weight: 500
+          }
+        }
+      },
+      'peoples-choice': {
+        name: 'People\'s Choice',
+        logo: './images/peoples-choice.png',
+        tagline: 'Insurance chosen by the people, for the people',
+        colors: {
+          primary: '#2379c4', // Blue from logo background
+          secondary: '#9d3c9d', // Purple from heart
+          background: '#f0f7fd',
+          text: '#333333',
+          footer: '#2379c4'
+        },
+        checkout: {
+          colorPrimary: '#2379c4',
+          colorBackground: '#ffffff',
+          colorText: '#333333',
+          colorDanger: '#bf360c',
+          borderRadius: '0.75rem',
+          fonts: {
+            primary: "'Raleway', sans-serif",
+            weight: 600
+          }
+        }
+      }
+    };
+
+    // Checkout.com configuration
+    const CHECKOUT_PUBLIC_KEY = "pk_sbox_e5v4rg3sztzmdusp47pvdg53kmc";
+    const ENVIRONMENT = "sandbox";
+
+    // Get current brand from URL
+    function getCurrentBrand() {
+      const urlParams = new URLSearchParams(window.location.search);
+      let brand = urlParams.get('brand');
+      
+      // Default to hastings-direct if no brand specified
+      if (!brand || !brandConfigurations[brand]) {
+        brand = 'hastings-direct';
+      }
+      
+      return brand;
+    }
+
+    // Apply brand styling
+    function applyBrandStyling(brand) {
+      const brandConfig = brandConfigurations[brand];
+      
+      // Update page title
+      document.title = `Payment - ${brandConfig.name}`;
+      
+      // Update header elements
+      document.getElementById('brand-header').textContent = `${brandConfig.name} Payment`;
+      document.getElementById('brand-tagline').textContent = brandConfig.tagline;
+      
+      // Set logo
+      const logoContainer = document.getElementById('brand-logo-container');
+      logoContainer.innerHTML = `<img src="${brandConfig.logo}" alt="${brandConfig.name}" class="brand-logo">`;
+      
+      // Apply brand colors
+      const appContainer = document.getElementById('app-container');
+      const productInfo = document.getElementById('product-info');
+      const footer = document.getElementById('brand-footer');
+      const paymentContainer = document.querySelector('.payment-container');
+      
+      // Style main elements
+      appContainer.style.color = brandConfig.colors.text;
+      productInfo.style.backgroundColor = brandConfig.colors.background;
+      footer.style.backgroundColor = brandConfig.colors.footer;
+      
+      // Apply brand-specific font if needed
+      if (brandConfig.checkout && brandConfig.checkout.fonts && brandConfig.checkout.fonts.primary) {
+        document.body.style.fontFamily = brandConfig.checkout.fonts.primary;
+      }
+
+      // Remove any previously injected brand styles
+      const existingStyles = document.querySelectorAll('style.brand-styles');
+      existingStyles.forEach(style => style.remove());
+      
+      // Brand-specific customisations
+      switch(brand) {
+        case 'hastings-direct':
+          // Corporate style with sharp edges and Work Sans font
+          const directStyle = document.createElement('style');
+          directStyle.className = 'brand-styles';
+          directStyle.innerHTML = `
+            body {
+              font-family: 'Work Sans', sans-serif;
+              background-color: #f5f5f5;
+            }
+            .payment-container {
+              border-radius: 0;
+              box-shadow: 0 5px 15px rgba(34, 108, 180, 0.1);
+              border: 1px solid rgba(34, 108, 180, 0.1);
+            }
+            .payment-container::before {
+              background: linear-gradient(to right, #226cb4, #226cb4);
+              height: 4px;
+            }
+            .product-info {
+              border-radius: 0;
+              box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+              border: 1px solid #e8e8e8;
+            }
+            .flow-container {
+              border-radius: 0;
+              background-color: #f5f5f5;
+              border: 1px solid #e0e0e0;
+            }
+            .secure-badge {
+              border-radius: 0;
+              background-color: rgba(34, 108, 180, 0.05);
+              border: 1px solid rgba(34, 108, 180, 0.1);
+            }
+            .product-title::after {
+              width: 30px;
+              height: 2px;
+              background-color: #226cb4;
+            }
+            .product-title, .product-price, h3 {
+              color: #226cb4;
+              font-weight: 600;
+            }
+            .page-title {
+              color: #333333;
+              font-weight: 600;
+            }
+            .page-subtitle {
+              color: #666666;
+              font-weight: 400;
+            }
+            h3 {
+              font-size: 1.3rem;
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+            }
+            footer {
+              background: linear-gradient(to right, #226cb4, #1c5a97);
+            }
+            .back-button {
+              border-radius: 0;
+              font-weight: 500;
+            }
+            .help-link {
+              color: #226cb4;
+              text-decoration: none;
+              border-bottom: 1px solid #226cb4;
+            }
+            .help-link:hover {
+              color: #e42726;
+              border-color: #e42726;
+            }
+          `;
+          document.head.appendChild(directStyle);
+          break;
+          
+        case 'hastings-premier':
+          // Luxury style with gold accents and serif font
+          const premierStyle = document.createElement('style');
+          premierStyle.className = 'brand-styles';
+          premierStyle.innerHTML = `
+            body {
+              font-family: 'Lato', sans-serif;
+              background-color: #FCFAF7;
+            }
+            .payment-container {
+              border-radius: 4px;
+              box-shadow: 0 10px 30px rgba(26, 35, 126, 0.07);
+              border: 1px solid rgba(230, 164, 59, 0.2);
+              padding: 3rem;
+            }
+            .payment-container::before {
+              background: linear-gradient(to right, #e6a43b, #e6a43b);
+              height: 6px;
+            }
+            .product-info {
+              border-radius: 4px;
+              box-shadow: 0 5px 20px rgba(230, 164, 59, 0.05);
+              border: 1px solid rgba(230, 164, 59, 0.2);
+              padding: 2rem;
+            }
+            .flow-container {
+              border-radius: 4px;
+              background-color: #ffffff;
+              border: 1px solid rgba(230, 164, 59, 0.15);
+              padding: 2rem;
+            }
+            .secure-badge {
+              border-radius: 2px;
+              background-color: rgba(230, 164, 59, 0.05);
+              border: 1px solid rgba(230, 164, 59, 0.2);
+              text-transform: uppercase;
+              letter-spacing: 1px;
+              font-size: 0.8rem;
+              font-weight: 600;
+            }
+            .secure-badge i {
+              color: #e6a43b;
+            }
+            .product-title::after {
+              width: 40px;
+              height: 2px;
+              background-color: #e6a43b;
+            }
+            .product-title, h3 {
+              font-family: 'Playfair Display', serif;
+              color: #1a237e;
+              font-weight: 600;
+            }
+            .product-price {
+              color: #e6a43b;
+              font-family: 'Playfair Display', serif;
+              font-size: 2rem;
+            }
+            .page-title {
+              font-family: 'Playfair Display', serif;
+              color: #1a237e;
+              font-weight: 600;
+            }
+            .page-subtitle {
+              color: #555555;
+              font-weight: 400;
+              letter-spacing: 0.2px;
+            }
+            h3 {
+              font-size: 1.5rem;
+              margin-bottom: 1.5rem;
+            }
+            footer {
+              background: linear-gradient(to right, #1a237e, #111a5e);
+            }
+            .back-button {
+              border-radius: 2px;
+              font-weight: 500;
+              text-transform: uppercase;
+              letter-spacing: 1px;
+              font-size: 0.85rem;
+            }
+            .help-link {
+              color: #e6a43b;
+              text-decoration: none;
+              font-weight: 600;
+            }
+            .help-link:hover {
+              color: #1a237e;
+            }
+            .price-details {
+              background: rgba(230, 164, 59, 0.05);
+              border: 1px solid rgba(230, 164, 59, 0.1);
+              border-radius: 2px;
+            }
+            .price-total {
+              border-top: 1px solid rgba(230, 164, 59, 0.2);
+              color: #1a237e;
+              font-weight: 700;
+            }
+          `;
+          document.head.appendChild(premierStyle);
+          break;
+          
+        case 'hastings-essential':
+          // Utilitarian, straightforward style
+          const essentialStyle = document.createElement('style');
+          essentialStyle.className = 'brand-styles';
+          essentialStyle.innerHTML = `
+            body {
+              font-family: 'Roboto', sans-serif;
+              background-color: #f5f5f5;
+            }
+            .payment-container {
+              border-radius: 2px;
+              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+              border: 1px solid #e0e0e0;
+              padding: 2rem;
+            }
+            .payment-container::before {
+              background: #e42726;
+              height: 3px;
+            }
+            .product-info {
+              border-radius: 2px;
+              box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+              border: 1px solid #e0e0e0;
+              padding: 1.5rem;
+            }
+            .flow-container {
+              border-radius: 2px;
+              background-color: #f7f7f7;
+              border: 1px solid #e0e0e0;
+            }
+            .secure-badge {
+              border-radius: 2px;
+              background-color: #f2f2f2;
+              border: 1px solid #e0e0e0;
+              font-size: 0.85rem;
+            }
+            .product-title::after {
+              width: 24px;
+              height: 2px;
+              background-color: #e42726;
+            }
+            .product-title, h3 {
+              color: #333333;
+              font-weight: 500;
+            }
+            .product-price {
+              color: #e42726;
+              font-weight: 500;
+            }
+            .page-title {
+              color: #333333;
+              font-weight: 500;
+            }
+            .page-subtitle {
+              color: #666666;
+              font-weight: 400;
+            }
+            h3 {
+              font-size: 1.2rem;
+              margin-bottom: 1rem;
+            }
+            footer {
+              background: #e42726;
+            }
+            .back-button {
+              border-radius: 2px;
+              font-weight: 400;
+            }
+            .help-link {
+              color: #e42726;
+              font-weight: 500;
+            }
+            .help-link:hover {
+              color: #b71c1c;
+            }
+            .price-details {
+              background: #f2f2f2;
+              border-radius: 2px;
+            }
+          `;
+          document.head.appendChild(essentialStyle);
+          break;
+          
+        case 'hastings-youdrive':
+          // Tech-forward, modern dark mode inspired style
+          const youdriveStyle = document.createElement('style');
+          youdriveStyle.className = 'brand-styles';
+          youdriveStyle.innerHTML = `
+            body {
+              font-family: 'PT Sans', sans-serif;
+              background-color: #F0F7FF;
+            }
+            .payment-container {
+              border-radius: 8px;
+              box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+              border: none;
+              padding: 2.5rem;
+            }
+            .payment-container::before {
+              background: linear-gradient(to right, #2273bc, #1c5e99);
+              height: 5px;
+            }
+            .product-info {
+              border-radius: 8px;
+              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+              border: none;
+              background-color: #ffffff;
+            }
+            .flow-container {
+              border-radius: 8px;
+              background-color: #ffffff;
+              border: 1px solid #E2ECF7;
+            }
+            .secure-badge {
+              border-radius: 4px;
+              background-color: rgba(34, 115, 188, 0.05);
+              border: 1px solid rgba(34, 115, 188, 0.1);
+              font-family: 'Roboto Mono', monospace;
+              font-size: 0.8rem;
+            }
+            .secure-badge i {
+              color: #2273bc;
+            }
+            .product-title::after {
+              width: 30px;
+              height: 2px;
+              background-color: #2273bc;
+            }
+            .product-title, h3 {
+              color: #2273bc;
+              font-family: 'Roboto Mono', monospace;
+              font-weight: 700;
+            }
+            .product-price {
+              color: #2273bc;
+              font-family: 'Roboto Mono', monospace;
+              font-weight: 700;
+            }
+            .page-title {
+              color: #2273bc;
+              font-family: 'Roboto Mono', monospace;
+              font-weight: 700;
+            }
+            .page-subtitle {
+              color: #4F5B66;
+              font-weight: 400;
+            }
+            h3 {
+              font-size: 1.3rem;
+              margin-bottom: 1.25rem;
+              text-transform: uppercase;
+              letter-spacing: 1px;
+            }
+            footer {
+              background: linear-gradient(to right, #2273bc, #1c5e99);
+            }
+            .back-button {
+              border-radius: 4px;
+              font-weight: 400;
+              font-family: 'Roboto Mono', monospace;
+            }
+            .help-link {
+              color: #2273bc;
+              font-family: 'Roboto Mono', monospace;
+              font-weight: 700;
+            }
+            .help-link:hover {
+              color: #e42726;
+            }
+            .price-details {
+              background: rgba(34, 115, 188, 0.05);
+              border-radius: 4px;
+              font-family: 'Roboto Mono', monospace;
+            }
+            .price-total {
+              border-top: 1px solid rgba(34, 115, 188, 0.2);
+            }
+          `;
+          document.head.appendChild(youdriveStyle);
+          break;
+          
+        case 'insurepink':
+          // Soft, feminine styling with rounded elements
+          const pinkStyle = document.createElement('style');
+          pinkStyle.className = 'brand-styles';
+          pinkStyle.innerHTML = `
+            body {
+              font-family: 'Quicksand', sans-serif;
+              background-color: #FFF5FA;
+            }
+            .payment-container {
+              border-radius: 16px;
+              box-shadow: 0 10px 30px rgba(212, 59, 149, 0.1);
+              border: none;
+              padding: 2.5rem;
+            }
+            .payment-container::before {
+              background: linear-gradient(to right, #eb75b5, #d43b95);
+              height: 6px;
+              border-radius: 0 0 3px 3px;
+            }
+            .product-info {
+              border-radius: 16px;
+              box-shadow: 0 8px 20px rgba(212, 59, 149, 0.08);
+              border: none;
+              padding: 2rem;
+            }
+            .flow-container {
+              border-radius: 16px;
+              background-color: #ffffff;
+              box-shadow: 0 4px 16px rgba(212, 59, 149, 0.05);
+              border: none;
+            }
+            .secure-badge {
+              border-radius: 50px;
+              background-color: rgba(212, 59, 149, 0.05);
+              border: none;
+              padding: 8px 16px;
+              font-size: 0.85rem;
+              font-weight: 600;
+            }
+            .secure-badge i {
+              color: #d43b95;
+            }
+            .product-title::after {
+              width: 40px;
+              height: 3px;
+              background-color: #eb75b5;
+              border-radius: 50px;
+            }
+            .product-title, h3 {
+              color: #d43b95;
+              font-weight: 600;
+            }
+            .product-price {
+              color: #d43b95;
+              font-weight: 700;
+              font-size: 2.2rem;
+            }
+            .page-title {
+              color: #d43b95;
+              font-weight: 700;
+            }
+            .page-subtitle {
+              color: #666666;
+              font-weight: 500;
+            }
+            h3 {
+              font-size: 1.4rem;
+              margin-bottom: 1.5rem;
+            }
+            footer {
+              background: linear-gradient(to right, #d43b95, #b72d7d);
+              border-radius: 16px 16px 0 0;
+            }
+            .back-button {
+              border-radius: 50px;
+              font-weight: 600;
+              padding: 6px 16px;
+              transition: all 0.3s ease;
+            }
+            .back-button:hover {
+              background-color: rgba(212, 59, 149, 0.05);
+            }
+            .help-link {
+              color: #d43b95;
+              font-weight: 600;
+            }
+            .help-link:hover {
+              color: #eb75b5;
+            }
+            .price-details {
+              background: rgba(212, 59, 149, 0.05);
+              border-radius: 12px;
+            }
+            .price-total {
+              border-top: 1px solid rgba(212, 59, 149, 0.1);
+            }
+            #brand-logo-container img {
+              transform: scale(1.1);
+            }
+          `;
+          document.head.appendChild(pinkStyle);
+          break;
+          
+        case 'peoples-choice':
+          // Friendly, approachable with asymmetric styling
+          const peoplesStyle = document.createElement('style');
+          peoplesStyle.className = 'brand-styles';
+          peoplesStyle.innerHTML = `
+            body {
+              font-family: 'Poppins', sans-serif;
+              background-color: #F0F7FD;
+            }
+            .payment-container {
+              border-radius: 8px 24px 8px 24px;
+              box-shadow: 0 12px 30px rgba(35, 121, 196, 0.1);
+              border: none;
+              padding: 2.5rem;
+            }
+            .payment-container::before {
+              background: linear-gradient(to right, #2379c4, #9d3c9d);
+              height: 6px;
+              border-radius: 0 0 4px 0;
+            }
+            .product-info {
+              border-radius: 8px 24px 8px 24px;
+              box-shadow: 0 8px 20px rgba(35, 121, 196, 0.08);
+              border: none;
+              padding: 2rem;
+            }
+            .flow-container {
+              border-radius: 8px 24px 8px 24px;
+              background-color: #ffffff;
+              border: none;
+              box-shadow: 0 4px 12px rgba(35, 121, 196, 0.05);
+            }
+            .secure-badge {
+              border-radius: 24px 8px 24px 8px;
+              background-color: rgba(35, 121, 196, 0.05);
+              border: 1px solid rgba(35, 121, 196, 0.1);
+              padding: 8px 16px;
+              font-weight: 500;
+            }
+            .secure-badge i {
+              color: #9d3c9d;
+            }
+            .product-title::after {
+              width: 36px;
+              height: 3px;
+              background: linear-gradient(to right, #2379c4, #9d3c9d);
+              border-radius: 3px;
+            }
+            .product-title, h3 {
+              color: #2379c4;
+              font-weight: 600;
+            }
+            .product-price {
+              color: #9d3c9d;
+              font-weight: 700;
+              font-size: 2rem;
+            }
+            .page-title {
+              color: #2379c4;
+              font-weight: 600;
+            }
+            .page-subtitle {
+              color: #555555;
+              font-weight: 400;
+            }
+            h3 {
+              font-size: 1.3rem;
+              margin-bottom: 1.25rem;
+            }
+            footer {
+              background: linear-gradient(to right, #2379c4, #1c61a0);
+              border-radius: 24px 24px 0 0;
+            }
+            .back-button {
+              border-radius: 24px 8px 24px 8px;
+              font-weight: 500;
+              padding: 6px 16px;
+              transition: all 0.3s ease;
+            }
+            .back-button:hover {
+              background-color: rgba(35, 121, 196, 0.05);
+            }
+            .help-link {
+              color: #9d3c9d;
+              font-weight: 600;
+            }
+            .help-link:hover {
+              color: #2379c4;
+            }
+            .price-details {
+              background: rgba(35, 121, 196, 0.05);
+              border-radius: 8px 24px 8px 24px;
+            }
+            .price-total {
+              border-top: 1px solid rgba(35, 121, 196, 0.1);
+              color: #9d3c9d;
+            }
+          `;
+          document.head.appendChild(peoplesStyle);
+          break;
+      }
+    }
+
+    async function initializeCheckout(brand) {
+      try {
+        // Show loading indicator - already in HTML
+
+        // Get brand config
+        const brandConfig = brandConfigurations[brand];
+        
+        console.log('Initializing checkout for brand:', brand);
+        console.log('Brand config:', JSON.stringify(brandConfig, null, 2));
+        
+        // Create a test appearance object with direct properties (no variables wrapper)
+        const testAppearance = createAppearanceForBrand(brand, brandConfig);
+        
+        console.log('Using test appearance object:', JSON.stringify(testAppearance, null, 2));
+
+        // 1. Create a payment session
+        const response = await fetch('/api/create-payment-session', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            amount: 34999, // Amount in minor units (349.99)
+            currency: 'GBP',
+            items: [{
+              name: "Car Insurance Policy",
+              quantity: 1,
+              unit_price: 34999,
+              total_amount: 34999,
+              reference: "POLICY-ANNUAL"
+            }],
+            customer: {
+              email: "customer@example.com",
+              name: "John Doe"
+            },
+            billing: {
+              address: {
+                address_line1: "123 Test Street",
+                city: "London",
+                state: "LDN",
+                zip: "W1T 4TJ",
+                country: "GB"
+              }
+            },
+            brand // Pass brand for custom success URL
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to create payment session');
+        }
+
+        const paymentSession = await response.json();
+
+        // 2. Initialize Checkout.com Web Components with brand-specific styling
+        const checkout = await CheckoutWebComponents({
+          publicKey: CHECKOUT_PUBLIC_KEY,
+          environment: ENVIRONMENT,
+          paymentSession: paymentSession,
+          locale: "en-GB",
+          // Test with direct properties instead of variables wrapper
+          appearance: testAppearance,
+          onReady: () => {
+            console.log('Payment components ready');
+            console.log('Checkout component initialized with appearance:', JSON.stringify(testAppearance, null, 2));
+            document.getElementById('flow-container').classList.remove('loading');
+          },
+          onPaymentCompleted: (component, paymentResponse) => {
+            console.log('Payment completed:', paymentResponse);
+
+            // Save session ID with payment response for later reference
+            const responseToSave = {
+              ...paymentResponse,
+              session_id: paymentSession.id,
+              brand: brand // Save brand for styling the success page
+            };
+
+            sessionStorage.setItem("paymentResponse", JSON.stringify(responseToSave));
+
+            // Also store payment response on the server
+            fetch('/api/store-payment-response', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(responseToSave)
+            }).catch(err => console.error('Failed to store payment response on server:', err));
+
+            // Redirect to success page
+            window.location.href = `/success.html?session_id=${paymentSession.id}&brand=${brand}`;
+          },
+          onError: (component, error) => {
+            console.error('Payment error:', error);
+            const errorElement = document.getElementById('error-message');
+            errorElement.textContent = error.message || 'Payment failed. Please try again.';
+            errorElement.style.display = 'block';
+            document.getElementById('flow-container').classList.remove('loading');
+          }
+        });
+
+        // 3. Create and mount the Flow component
+        const flow = checkout.create('flow');
+        flow.mount('#flow-container');
+
+      } catch (error) {
+        console.error('Checkout initialization error:', error);
+        document.getElementById('error-message').textContent = 'Failed to initialize payment.';
+        document.getElementById('error-message').style.display = 'block';
+        document.getElementById('flow-container').classList.remove('loading');
+      }
+    }
+
+    // Helper function to create a brand-specific appearance object
+    function createAppearanceForBrand(brand, config) {
+      // Base appearance is just a template, each brand will have a unique implementation
+      const baseAppearance = {
+        colorBackground: config.checkout.colorBackground,
+        colorBorder: config.colors.secondary + '40', 
+        colorPrimary: config.checkout.colorPrimary,
+        colorSecondary: config.colors.secondary,
+        colorAction: config.checkout.colorPrimary,
+        colorOutline: config.colors.secondary + '80',
+        colorSuccess: '#2ECC71',
+        colorError: config.checkout.colorDanger,
+        colorDisabled: '#64646E',
+        colorInverse: '#FFFFFF',
+        colorFormBackground: config.colors.background,
+        colorFormBorder: config.colors.secondary + '30',
+        borderRadius: [
+          config.checkout.borderRadius,
+          config.checkout.borderRadius
+        ]
+      };
+
+      // Brand-specific customisations
+      switch(brand) {
+        case 'hastings-direct':
+          // Corporate, professional style with square elements and Work Sans font
+          return {
+            colorBackground: "#ffffff",
+            colorBorder: "#226cb440",
+            colorPrimary: "#226cb4", // Blue from DIRECT text
+            colorSecondary: "#6b89a5",
+            colorAction: "#226cb4",
+            colorOutline: "#e42726", // Red outline from Hastings logo
+            colorSuccess: "#3CB628",
+            colorError: "#e42726",
+            colorDisabled: "#AAAAAA",
+            colorInverse: "#ffffff",
+            colorFormBackground: "#F5F5F5",
+            colorFormBorder: "#E0E5EA",
+            borderRadius: [
+              "0px",
+              "0px"
+            ],
+            subheading: {
+              fontFamily: "'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+              fontSize: "16px",
+              lineHeight: "24px",
+              fontWeight: 600,
+              letterSpacing: 0
+            },
+            footnote: {
+              fontFamily: "'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+              fontSize: "14px",
+              lineHeight: "20px",
+              fontWeight: 400,
+              letterSpacing: 0
+            },
+            button: {
+              fontFamily: "'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+              fontSize: "16px",
+              lineHeight: "24px",
+              fontWeight: 600,
+              letterSpacing: 0
+            },
+            input: {
+              fontFamily: "'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+              fontSize: "16px",
+              lineHeight: "20px",
+              fontWeight: 400,
+              letterSpacing: 0
+            },
+            label: {
+              fontFamily: "'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+              fontSize: "14px",
+              lineHeight: "20px",
+              fontWeight: 500,
+              letterSpacing: 0
+            }
+          };
+        
+        case 'hastings-premier':
+          // Luxury inspired by Design 3 but with gold and navy blue
+          return {
+            colorBackground: "#FCFAF7", // Cream-colored background
+            colorBorder: "#e6a43b70", // Gold with transparency
+            colorPrimary: "#1a237e", // Navy blue
+            colorSecondary: "#1a237e",
+            colorAction: "#e6a43b", // Gold action color
+            colorOutline: "#e6a43b80", 
+            colorSuccess: "#2ECC71",
+            colorError: "#e42726",
+            colorDisabled: "#D0D0D0",
+            colorInverse: "#ffffff",
+            colorFormBackground: "#ffffff",
+            colorFormBorder: "#e6a43b30",
+            borderRadius: [
+              "4px",
+              "4px"
+            ],
+            subheading: {
+              fontFamily: "'Playfair Display', serif",
+              fontSize: "18px",
+              lineHeight: "26px",
+              fontWeight: 600,
+              letterSpacing: 0.5
+            },
+            footnote: {
+              fontFamily: "'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+              fontSize: "14px",
+              lineHeight: "20px",
+              fontWeight: 400,
+              letterSpacing: 0.2
+            },
+            button: {
+              fontFamily: "'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+              fontSize: "16px",
+              lineHeight: "24px",
+              fontWeight: 700,
+              letterSpacing: 1
+            },
+            input: {
+              fontFamily: "'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+              fontSize: "16px",
+              lineHeight: "20px",
+              fontWeight: 400,
+              letterSpacing: 0.2
+            },
+            label: {
+              fontFamily: "'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+              fontSize: "14px",
+              lineHeight: "20px",
+              fontWeight: 600,
+              letterSpacing: 0.5
+            }
+          };
+          
+        case 'hastings-essential':
+          // Practical, straightforward, utilitarian - inspired by Design 1
+          return {
+            colorBackground: "#ffffff",
+            colorBorder: "#d1d1d1",
+            colorPrimary: "#333333",
+            colorSecondary: "#666666",
+            colorAction: "#e42726", // Red for action/CTA
+            colorOutline: "#e4272660",
+            colorSuccess: "#3CB628",
+            colorError: "#e42726",
+            colorDisabled: "#CCCCCC",
+            colorInverse: "#ffffff",
+            colorFormBackground: "#f7f7f7",
+            colorFormBorder: "#e0e0e0",
+            borderRadius: [
+              "2px",
+              "2px"
+            ],
+            subheading: {
+              fontFamily: "'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+              fontSize: "16px",
+              lineHeight: "24px",
+              fontWeight: 500,
+              letterSpacing: 0
+            },
+            footnote: {
+              fontFamily: "'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+              fontSize: "14px",
+              lineHeight: "20px",
+              fontWeight: 400,
+              letterSpacing: 0
+            },
+            button: {
+              fontFamily: "'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+              fontSize: "16px",
+              lineHeight: "24px",
+              fontWeight: 500,
+              letterSpacing: 0.25
+            },
+            input: {
+              fontFamily: "'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+              fontSize: "16px",
+              lineHeight: "20px",
+              fontWeight: 400,
+              letterSpacing: 0
+            },
+            label: {
+              fontFamily: "'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+              fontSize: "14px",
+              lineHeight: "20px",
+              fontWeight: 400,
+              letterSpacing: 0
+            }
+          };
+          
+        case 'hastings-youdrive':
+          // Tech-forward, modern design inspired by Design 2 but with lighter background
+          return {
+            colorBackground: "#F0F7FF", // Light blue background
+            colorBorder: "#2273bc40",
+            colorPrimary: "#2273bc", // Blue
+            colorSecondary: "#4F5B66",
+            colorAction: "#2273bc",
+            colorOutline: "#e42726", // Red outline from Hastings
+            colorSuccess: "#2ECC71",
+            colorError: "#e42726",
+            colorDisabled: "#A0AEC0",
+            colorInverse: "#ffffff",
+            colorFormBackground: "#ffffff",
+            colorFormBorder: "#E2ECF7",
+            borderRadius: [
+              "8px",
+              "8px"
+            ],
+            subheading: {
+              fontFamily: "'Roboto Mono', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+              fontSize: "16px",
+              lineHeight: "24px",
+              fontWeight: 700,
+              letterSpacing: 0
+            },
+            footnote: {
+              fontFamily: "'PT Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+              fontSize: "14px",
+              lineHeight: "20px",
+              fontWeight: 400,
+              letterSpacing: 0
+            },
+            button: {
+              fontFamily: "'Roboto Mono', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+              fontSize: "16px",
+              lineHeight: "24px",
+              fontWeight: 700,
+              letterSpacing: 0.5
+            },
+            input: {
+              fontFamily: "'PT Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+              fontSize: "16px",
+              lineHeight: "20px",
+              fontWeight: 400,
+              letterSpacing: 0
+            },
+            label: {
+              fontFamily: "'Roboto Mono', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+              fontSize: "14px",
+              lineHeight: "20px",
+              fontWeight: 500,
+              letterSpacing: 0
+            }
+          };
+          
+        case 'insurepink':
+          // Soft, feminine design with distinct rounded corners and gradients
+          return {
+            colorBackground: "#FFF5FA", // Very light pink
+            colorBorder: "#eb75b550",
+            colorPrimary: "#d43b95", // Magenta
+            colorSecondary: "#f083c3", // Lighter pink
+            colorAction: "#d43b95",
+            colorOutline: "#f083c380",
+            colorSuccess: "#2ECC71",
+            colorError: "#FF3366",
+            colorDisabled: "#D8C1CF",
+            colorInverse: "#ffffff",
+            colorFormBackground: "#ffffff",
+            colorFormBorder: "#FFCCE4",
+            borderRadius: [
+              "16px",
+              "16px"
+            ],
+            subheading: {
+              fontFamily: "'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+              fontSize: "18px",
+              lineHeight: "26px",
+              fontWeight: 600,
+              letterSpacing: 0
+            },
+            footnote: {
+              fontFamily: "'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+              fontSize: "14px",
+              lineHeight: "20px",
+              fontWeight: 400,
+              letterSpacing: 0
+            },
+            button: {
+              fontFamily: "'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+              fontSize: "16px",
+              lineHeight: "24px",
+              fontWeight: 700,
+              letterSpacing: 0
+            },
+            input: {
+              fontFamily: "'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+              fontSize: "16px",
+              lineHeight: "20px",
+              fontWeight: 500,
+              letterSpacing: 0
+            },
+            label: {
+              fontFamily: "'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+              fontSize: "14px",
+              lineHeight: "20px",
+              fontWeight: 600,
+              letterSpacing: 0
+            }
+          };
+          
+        case 'peoples-choice':
+          // Friendly, approachable with asymmetric border radius like Design 3
+          return {
+            colorBackground: "#F0F7FD",
+            colorBorder: "#2379c4",
+            colorPrimary: "#2379c4", // Blue
+            colorSecondary: "#9d3c9d", // Purple
+            colorAction: "#9d3c9d", // Purple for actions
+            colorOutline: "#9d3c9d80",
+            colorSuccess: "#06DDB2",
+            colorError: "#FF3300",
+            colorDisabled: "#B5CCE0",
+            colorInverse: "#ffffff",
+            colorFormBackground: "#ffffff",
+            colorFormBorder: "#DCE7F5",
+            borderRadius: [
+              "8px",
+              "24px" // Asymmetric corners
+            ],
+            subheading: {
+              fontFamily: "'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+              fontSize: "17px",
+              lineHeight: "26px",
+              fontWeight: 600,
+              letterSpacing: 0
+            },
+            footnote: {
+              fontFamily: "'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+              fontSize: "14px",
+              lineHeight: "20px",
+              fontWeight: 400,
+              letterSpacing: 0
+            },
+            button: {
+              fontFamily: "'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+              fontSize: "16px",
+              lineHeight: "24px",
+              fontWeight: 600,
+              letterSpacing: 0.5
+            },
+            input: {
+              fontFamily: "'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+              fontSize: "15px",
+              lineHeight: "22px",
+              fontWeight: 400,
+              letterSpacing: 0
+            },
+            label: {
+              fontFamily: "'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+              fontSize: "14px",
+              lineHeight: "20px",
+              fontWeight: 500,
+              letterSpacing: 0.2
+            }
+          };
+          
+        default:
+          return baseAppearance;
+      }
+    }
+
+    // Initialize when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      const brand = getCurrentBrand();
+      applyBrandStyling(brand);
+      initializeCheckout(brand);
+    });
+  </script>
+</body>
+</html> 

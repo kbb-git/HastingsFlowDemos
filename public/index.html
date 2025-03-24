@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout.com Flow Designs</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-blue: #003366;
+      --accent-red: #e5322d;
+      --light-gray: #f8f9fa;
+      --text-dark: #333333;
+      --text-light: #6c757d;
+      --white: #ffffff;
+      --shadow-sm: rgba(0, 0, 0, 0.05);
+      --shadow-md: rgba(0, 0, 0, 0.1);
+      --shadow-lg: rgba(0, 0, 0, 0.15);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+    }
+    
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--light-gray);
+      color: var(--text-dark);
+      padding-top: 2rem;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1200px;
+    }
+    
+    .brand-header-container {
+      background: linear-gradient(135deg, var(--primary-blue) 0%, #004080 100%);
+      padding: 2.5rem 0;
+      margin-bottom: 3rem;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 10px 30px var(--shadow-md);
+    }
+    
+    .brand-header {
+      color: var(--white);
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      position: relative;
+      padding-bottom: 0.5rem;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    .brand-header-accent {
+      color: var(--accent-red);
+    }
+    
+    .brand-subheader {
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 500;
+      font-size: 1.2rem;
+    }
+    
+    .brand-card {
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                  box-shadow 0.5s ease;
+      height: 100%;
+      border: none;
+      box-shadow: 0 10px 30px var(--shadow-sm);
+      position: relative;
+      z-index: 1;
+    }
+    
+    .brand-card:hover {
+      transform: translateY(-12px);
+      box-shadow: 0 20px 40px var(--shadow-lg);
+      z-index: 2;
+    }
+    
+    .brand-card .card-header {
+      border-bottom: none;
+      padding: 1.5rem 1.5rem;
+      position: relative;
+      overflow: hidden;
+      height: 85px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .brand-card .card-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .card-title {
+      position: relative;
+      z-index: 2;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+    
+    .brand-card .card-body {
+      padding: 1.5rem;
+      background: var(--white);
+    }
+    
+    .brand-card .card-footer {
+      background: var(--white);
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+      padding: 1.25rem 1.5rem;
+    }
+    
+    .brand-logo-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 120px;
+      margin-bottom: 1.5rem;
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px;
+      transition: all 0.4s ease;
+      padding: 18px;
+    }
+    
+    .brand-logo {
+      max-height: 75px;
+      max-width: 85%;
+      transition: transform 0.4s ease;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    }
+    
+    .brand-card:hover .brand-logo {
+      transform: scale(1.08);
+    }
+    
+    /* Brand-specific logo containers */
+    .hastings-direct .brand-logo-container {
+      background: linear-gradient(to bottom, #ffffff 0%, #e6f7ff 100%);
+      border-bottom: 3px solid #0095be;
+      border-top: 1px solid rgba(0, 149, 190, 0.2);
+      border-left: 1px solid rgba(0, 149, 190, 0.2);
+      border-right: 1px solid rgba(0, 149, 190, 0.2);
+      box-shadow: 0 2px 10px rgba(0, 149, 190, 0.08);
+    }
+    
+    .hastings-premier .brand-logo-container {
+      background: linear-gradient(to bottom, #ffffff 0%, #fff8e0 100%);
+      border-bottom: 3px solid #ff9e00;
+      border-top: 1px solid rgba(255, 158, 0, 0.2);
+      border-left: 1px solid rgba(255, 158, 0, 0.2);
+      border-right: 1px solid rgba(255, 158, 0, 0.2);
+      box-shadow: 0 2px 10px rgba(255, 158, 0, 0.08);
+    }
+    
+    .hastings-essential .brand-logo-container {
+      background: linear-gradient(to bottom, #ffffff 0%, #f1f7f7 100%);
+      border-bottom: 3px solid #db3a34;
+      border-top: 1px solid rgba(219, 58, 52, 0.2);
+      border-left: 1px solid rgba(219, 58, 52, 0.2);
+      border-right: 1px solid rgba(219, 58, 52, 0.2);
+      box-shadow: 0 2px 10px rgba(219, 58, 52, 0.08);
+    }
+    
+    .hastings-youdrive .brand-logo-container {
+      background: linear-gradient(to bottom, #ffffff 0%, #f7faff 100%);
+      border-bottom: 3px solid #0066cc;
+      border-top: 1px solid rgba(0, 102, 204, 0.1);
+      border-left: 1px solid rgba(0, 102, 204, 0.1);
+      border-right: 1px solid rgba(0, 102, 204, 0.1);
+      box-shadow: 0 2px 10px rgba(0, 102, 204, 0.08);
+    }
+    
+    .insurepink .brand-logo-container {
+      background: linear-gradient(to bottom, #fffafc 0%, #ffebf2 100%);
+      border-bottom: 3px solid #d81b60;
+      border-top: 1px solid rgba(173, 20, 87, 0.1);
+      border-left: 1px solid rgba(173, 20, 87, 0.1);
+      border-right: 1px solid rgba(173, 20, 87, 0.1);
+      box-shadow: 0 2px 10px rgba(173, 20, 87, 0.08);
+    }
+    
+    .peoples-choice .brand-logo-container {
+      background: linear-gradient(to bottom, #f7faff 0%, #ebf5ff 100%);
+      border-bottom: 3px solid #0096d6;
+      border-top: 1px solid rgba(0, 150, 214, 0.1);
+      border-left: 1px solid rgba(0, 150, 214, 0.1);
+      border-right: 1px solid rgba(0, 150, 214, 0.1);
+      box-shadow: 0 2px 10px rgba(0, 150, 214, 0.08);
+    }
+    
+    /* Brand containers hover effects */
+    .hastings-direct:hover .brand-logo-container {
+      background: linear-gradient(to bottom, #ffffff 0%, #e6f7ff 100%);
+      border-bottom-color: #0095be;
+      box-shadow: 0 4px 15px rgba(0, 149, 190, 0.15);
+    }
+    
+    .hastings-premier:hover .brand-logo-container {
+      background: linear-gradient(to bottom, #ffffff 0%, #fff8e0 100%);
+      border-bottom-color: #ff9e00;
+      box-shadow: 0 4px 15px rgba(255, 158, 0, 0.15);
+    }
+    
+    .hastings-essential:hover .brand-logo-container {
+      background: linear-gradient(to bottom, #ffffff 0%, #ffedec 100%);
+      border-bottom-color: #db3a34;
+      box-shadow: 0 4px 15px rgba(219, 58, 52, 0.15);
+    }
+    
+    .hastings-youdrive:hover .brand-logo-container {
+      background: linear-gradient(to bottom, #f2f8ff 0%, #e0eeff 100%);
+      border-bottom-color: #0066cc;
+      box-shadow: 0 4px 15px rgba(0, 102, 204, 0.15);
+    }
+    
+    .insurepink:hover .brand-logo-container {
+      background: linear-gradient(to bottom, #fff5f9 0%, #fde0eb 100%);
+      border-bottom-color: #d81b60;
+      box-shadow: 0 4px 15px rgba(173, 20, 87, 0.15);
+    }
+    
+    .peoples-choice:hover .brand-logo-container {
+      background: linear-gradient(to bottom, #f2f9ff 0%, #dceeff 100%);
+      border-bottom-color: #0096d6;
+      box-shadow: 0 4px 15px rgba(0, 150, 214, 0.15);
+    }
+    
+    .brand-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: inherit;
+      opacity: 0.9;
+    }
+    
+    .card-text {
+      color: var(--text-light);
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+      min-height: 60px;
+    }
+    
+    .btn-brand {
+      border-radius: 50px;
+      padding: 0.8rem 1.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      font-size: 0.95rem;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-brand::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.15);
+      transition: all 0.5s ease;
+      z-index: -1;
+    }
+    
+    .btn-brand:hover::before {
+      left: 0;
+    }
+    
+    .btn-brand:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    /* Brand specific styles */
+    .hastings-direct .card-header {
+      background: linear-gradient(135deg, #003366 0%, #0095be 100%);
+      color: white;
+    }
+    
+    .hastings-premier .card-header {
+      background: linear-gradient(135deg, #542f87 0%, #ff9e00 100%);
+      color: white;
+    }
+    
+    .hastings-essential .card-header {
+      background: linear-gradient(135deg, #405c60 0%, #db3a34 100%);
+      color: white;
+    }
+    
+    .hastings-youdrive .card-header {
+      background: linear-gradient(135deg, #0052a2 0%, #0066cc 100%);
+      color: white;
+    }
+    
+    .insurepink .card-header {
+      background: linear-gradient(135deg, #ad1457 0%, #f48fb1 100%);
+      color: white;
+    }
+    
+    .peoples-choice .card-header {
+      background: linear-gradient(135deg, #0080c5 0%, #0096d6 100%);
+      color: white;
+    }
+    
+    /* Buttons to match brand colors */
+    .hastings-direct .btn-brand {
+      background-color: #0095be;
+      border-color: #0095be;
+      color: white;
+    }
+    
+    .hastings-premier .btn-brand {
+      background-color: #ff9e00;
+      border-color: #ff9e00;
+      color: white;
+      font-weight: 700;
+    }
+    
+    .hastings-essential .btn-brand {
+      background-color: #db3a34;
+      border-color: #db3a34;
+      color: white;
+      font-weight: 600;
+    }
+    
+    .hastings-youdrive .btn-brand {
+      background-color: #0066cc;
+      border-color: #0066cc;
+      color: white;
+    }
+    
+    .insurepink .btn-brand {
+      background-color: #ad1457;
+      border-color: #ad1457;
+      color: white;
+    }
+    
+    .peoples-choice .btn-brand {
+      background-color: #0096d6;
+      border-color: #0096d6;
+      color: white;
+    }
+
+    footer {
+      margin-top: 6rem;
+      padding: 3rem 0;
+      background: linear-gradient(135deg, #002747 0%, #003366 100%);
+      color: rgba(255, 255, 255, 0.9);
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+    }
+    
+    .footer-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .footer-divider {
+      width: 60px;
+      height: 3px;
+      background: var(--accent-red);
+      margin: 1.5rem auto;
+      border-radius: 50px;
+    }
+    
+    .copyright {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+    
+    /* Animation for cards */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .animate-fade-in {
+      animation: fadeIn 0.6s ease forwards;
+      opacity: 0;
+    }
+    
+    .animate-delay-1 { animation-delay: 0.1s; }
+    .animate-delay-2 { animation-delay: 0.2s; }
+    .animate-delay-3 { animation-delay: 0.3s; }
+    .animate-delay-4 { animation-delay: 0.4s; }
+    .animate-delay-5 { animation-delay: 0.5s; }
+    .animate-delay-6 { animation-delay: 0.6s; }
+
+    /* Add subtle texture overlay to card headers */
+    .card-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    /* Add decorative elements to the card corners */
+    .brand-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 0 0 0 100%;
+      z-index: 3;
+      pointer-events: none;
+    }
+    
+    /* Enhanced hover states for buttons */
+    .hastings-direct .btn-brand:active {
+      background-color: #0084a9;
+    }
+    
+    .hastings-premier .btn-brand:active {
+      background-color: #e89000;
+    }
+    
+    .hastings-essential .btn-brand:active {
+      background-color: #c73530;
+    }
+    
+    .hastings-youdrive .btn-brand:active {
+      background-color: #0058b3;
+    }
+    
+    .insurepink .btn-brand:active {
+      background-color: #9c1050;
+    }
+    
+    .peoples-choice .btn-brand:active {
+      background-color: #0082bd;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="container">
+      <div class="brand-header-container text-center">
+        <h1 class="brand-header">Checkout.com <span class="brand-header-accent">Flow</span> Designs</h1>
+        <p class="brand-subheader">Select a brand to view customised payment experiences</p>
+      </div>
+
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
+        <!-- Hastings Direct -->
+        <div class="col animate-fade-in animate-delay-1">
+          <div class="card brand-card hastings-direct">
+            <div class="card-header">
+              <h5 class="card-title mb-0">Hastings Direct</h5>
+            </div>
+            <div class="card-body">
+              <div class="brand-logo-container">
+                <img src="images/hastings-direct.png" alt="Hastings Direct logo" class="brand-logo">
+              </div>
+              <p class="card-text">Our largest and best-known brand, delivering great value car, bike, home and van insurance in a refreshingly straightforward way.</p>
+            </div>
+            <div class="card-footer bg-white border-0">
+              <a href="./payment.html?brand=hastings-direct" class="btn btn-brand w-100">Select Brand</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hastings Premier -->
+        <div class="col animate-fade-in animate-delay-2">
+          <div class="card brand-card hastings-premier">
+            <div class="card-header">
+              <h5 class="card-title mb-0">Hastings Premier</h5>
+            </div>
+            <div class="card-body">
+              <div class="brand-logo-container">
+                <img src="images/hastings-premier.png" alt="Hastings Premier logo" class="brand-logo">
+              </div>
+              <p class="card-text">Our premium cover, delivering all the benefits of Hastings Direct plus roadside breakdown cover and motor legal expenses included as standard.</p>
+            </div>
+            <div class="card-footer bg-white border-0">
+              <a href="./payment.html?brand=hastings-premier" class="btn btn-brand w-100">Select Brand</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hastings Essential -->
+        <div class="col animate-fade-in animate-delay-3">
+          <div class="card brand-card hastings-essential">
+            <div class="card-header">
+              <h5 class="card-title mb-0">Hastings Essential</h5>
+            </div>
+            <div class="card-body">
+              <div class="brand-logo-container">
+                <img src="images/hastings-essential.png" alt="Hastings Essential logo" class="brand-logo">
+              </div>
+              <p class="card-text">Our no-frills car and home insurance, providing just the essentials.</p>
+            </div>
+            <div class="card-footer bg-white border-0">
+              <a href="./payment.html?brand=hastings-essential" class="btn btn-brand w-100">Select Brand</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hastings YouDrive -->
+        <div class="col animate-fade-in animate-delay-4">
+          <div class="card brand-card hastings-youdrive">
+            <div class="card-header">
+              <h5 class="card-title mb-0">Hastings YouDrive</h5>
+            </div>
+            <div class="card-body">
+              <div class="brand-logo-container">
+                <img src="images/hastings-youdrive.png" alt="Hastings YouDrive logo" class="brand-logo">
+              </div>
+              <p class="card-text">Our Hastings Direct YouDrive insurance allows you to share your driving data with us through our app to get a great price on day one and, as long as you drive well, great prices year after year.</p>
+            </div>
+            <div class="card-footer bg-white border-0">
+              <a href="./payment.html?brand=hastings-youdrive" class="btn btn-brand w-100">Select Brand</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- InsurePink -->
+        <div class="col animate-fade-in animate-delay-5">
+          <div class="card brand-card insurepink">
+            <div class="card-header">
+              <h5 class="card-title mb-0">InsurePink</h5>
+            </div>
+            <div class="card-body">
+              <div class="brand-logo-container">
+                <img src="images/insurepink.png" alt="InsurePink logo" class="brand-logo">
+              </div>
+              <p class="card-text">InsurePink provides competitive car insurance, donating £10 from every policy sold to the Pink Ribbon Foundation.</p>
+            </div>
+            <div class="card-footer bg-white border-0">
+              <a href="./payment.html?brand=insurepink" class="btn btn-brand w-100">Select Brand</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- People's Choice -->
+        <div class="col animate-fade-in animate-delay-6">
+          <div class="card brand-card peoples-choice">
+            <div class="card-header">
+              <h5 class="card-title mb-0">People's Choice</h5>
+            </div>
+            <div class="card-body">
+              <div class="brand-logo-container">
+                <img src="images/peoples-choice.png" alt="People's Choice logo" class="brand-logo">
+              </div>
+              <p class="card-text">People's Choice car insurance provides great benefits at a competitive price.</p>
+            </div>
+            <div class="card-footer bg-white border-0">
+              <a href="./payment.html?brand=peoples-choice" class="btn btn-brand w-100">Select Brand</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="text-center">
+    <div class="container">
+      <div class="footer-content">
+        <p class="mb-2">This demonstration showcases the customisation capabilities of Checkout.com's Flow solution for Hastings Direct brands.</p>
+        <div class="footer-divider"></div>
+        <p class="copyright mb-0">© 2025 Hastings Direct Demo.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

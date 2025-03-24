@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Successful - Checkout.com</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0D47A1;
+      --success: #00C853;
+      --light-gray: #f5f7fa;
+      --text-dark: #1E293B;
+      --text-light: #64748B;
+      --white: #ffffff;
+      --shadow-sm: rgba(0, 0, 0, 0.05);
+      --shadow-md: rgba(15, 23, 42, 0.08);
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.7;
+      color: var(--text-dark);
+      margin: 0;
+      padding: 0;
+      background-color: var(--light-gray);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      background-color: var(--white);
+      padding: 0;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 12px 30px var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    #app-container {
+      flex: 1 0 auto;
+    }
+    
+    .success-header {
+      background: linear-gradient(135deg, #0D47A1, #2962FF);
+      padding: 40px 0 45px;
+      text-align: center;
+      color: white;
+      position: relative;
+    }
+    
+    .success-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 40px;
+      background: var(--white);
+      border-radius: 100% 100% 0 0;
+    }
+
+    .success-icon-wrapper {
+      width: 80px;
+      height: 80px;
+      background-color: var(--white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .success-icon {
+      font-size: 40px;
+      color: var(--success);
+    }
+
+    h1, h2, h3 {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+      color: var(--white);
+      font-size: 2.2rem;
+    }
+    
+    .header-description {
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 300;
+      font-size: 1.05rem;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .content-wrapper {
+      padding: 10px 40px 40px;
+    }
+
+    .payment-details {
+      border-radius: var(--radius-md);
+      padding: 32px;
+      margin: 30px 0;
+      background-color: #f8fafc;
+      border: 1px solid rgba(0, 0, 0, 0.04);
+    }
+    
+    .detail-section-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 25px;
+    }
+    
+    .detail-section-header h2 {
+      margin: 0;
+      font-size: 1.4rem;
+      color: var(--text-dark);
+    }
+    
+    .detail-section-header .line {
+      flex: 1;
+      height: 1px;
+      background-color: rgba(0, 0, 0, 0.08);
+      margin-left: 15px;
+    }
+
+    .detail-row {
+      display: flex;
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    }
+    
+    .detail-row:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .detail-label {
+      flex: 0 0 160px;
+      font-weight: 500;
+      color: var(--text-light);
+    }
+
+    .detail-value {
+      flex: 1;
+      font-weight: 500;
+    }
+    
+    .detail-value.highlight {
+      color: var(--success);
+      font-weight: 600;
+    }
+
+    .detail-value.description {
+      color: var(--primary);
+      font-style: italic;
+      padding: 8px 12px;
+      background-color: rgba(13, 71, 161, 0.05);
+      border-radius: var(--radius-sm);
+      display: inline-block;
+      margin-top: 4px;
+    }
+    
+    .response-section {
+      margin-bottom: 40px;
+    }
+    
+    .response-section .detail-section-header {
+      margin-bottom: 15px;
+    }
+
+    .json-response {
+      background-color: #111827;
+      color: #e2e8f0;
+      border-radius: var(--radius-md);
+      padding: 24px;
+      overflow: auto;
+      font-family: 'JetBrains Mono', 'Fira Code', 'Monaco', 'Courier New', monospace;
+      font-size: 13px;
+      white-space: pre-wrap;
+      line-height: 1.6;
+      max-height: 400px;
+      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.2);
+      position: relative;
+    }
+    
+    .json-key {
+      color: #9ce9ff;
+      font-weight: bold;
+    }
+    
+    .json-string {
+      color: #a5d6a7;
+    }
+    
+    .json-number {
+      color: #ffcc80;
+    }
+    
+    .json-boolean {
+      color: #ce93d8;
+      font-weight: bold;
+    }
+    
+    .json-null {
+      color: #ef9a9a;
+      font-style: italic;
+    }
+    
+    .indent-1 { padding-left: 1em; }
+    .indent-2 { padding-left: 2em; }
+    .indent-3 { padding-left: 3em; }
+    .indent-4 { padding-left: 4em; }
+
+    .copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background-color: rgba(255, 255, 255, 0.1);
+      color: #e2e8f0;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .copy-btn:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .copy-btn i {
+      font-size: 14px;
+    }
+
+    .back-button {
+      display: inline-block;
+      text-align: center;
+      padding: 12px 28px;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      transition: all 0.3s ease;
+      background-color: var(--primary);
+      color: white;
+      box-shadow: 0 4px 10px rgba(13, 71, 161, 0.25);
+    }
+
+    .back-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(13, 71, 161, 0.35);
+      color: white;
+    }
+    
+    .back-button i {
+      margin-right: 8px;
+    }
+    
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 200px;
+    }
+    
+    .loading .spinner-border {
+      width: 3rem;
+      height: 3rem;
+      color: var(--primary);
+    }
+
+    .buttons-container {
+      text-align: center;
+      margin-top: 30px;
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        margin: 15px;
+      }
+      .content-wrapper {
+        padding: 10px 20px 30px;
+      }
+      .detail-row {
+        flex-direction: column;
+      }
+      .detail-label {
+        margin-bottom: 5px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="app-container">
+    <div class="success-header">
+      <div class="success-icon-wrapper">
+        <i class="fas fa-check success-icon"></i>
+      </div>
+      <h1>Payment Successful</h1>
+      <p class="header-description">Your transaction has been completed successfully.</p>
+    </div>
+
+    <div class="content-wrapper">
+      <div class="payment-details" id="payment-details">
+        <div class="detail-section-header">
+          <h2>Payment Details</h2>
+          <div class="line"></div>
+        </div>
+        <div id="summary">
+          <div class="loading">
+            <div class="spinner-border" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="response-section">
+        <div class="detail-section-header">
+          <h2>API Response</h2>
+          <div class="line"></div>
+        </div>
+        <pre id="responsePre" class="json-response">Loading payment details...
+          <button class="copy-btn" id="copyBtn" title="Copy to clipboard">
+            <i class="fas fa-copy"></i> Copy
+          </button>
+        </pre>
+      </div>
+
+      <div class="buttons-container">
+        <a href="/" class="back-button">
+          <i class="fas fa-home"></i> Return to Home
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Format JSON for better readability with color highlighting
+    function formatJsonWithSyntaxHighlighting(json) {
+      if (!json) return '';
+      
+      // Format JSON string with syntax highlighting and proper indentation
+      let jsonStr = JSON.stringify(json, null, 2);
+      
+      // Enhanced formatting with improved readability
+      let formattedJson = '';
+      let indentLevel = 0;
+      
+      // Split by lines for better processing
+      const lines = jsonStr.split('\n');
+      
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        
+        // Calculate indent level based on braces
+        if (line.includes('}') || line.includes(']')) {
+          indentLevel--;
+        }
+        
+        // Create the formatted line with proper indentation and coloring
+        const escapedLine = line
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, 
+            function (match) {
+              let cls = 'json-number';
+              if (/^"/.test(match)) {
+                if (/:$/.test(match)) {
+                  cls = 'json-key';
+                } else {
+                  cls = 'json-string';
+                }
+              } else if (/true|false/.test(match)) {
+                cls = 'json-boolean';
+              } else if (/null/.test(match)) {
+                cls = 'json-null';
+              }
+              return '<span class="' + cls + '">' + match + '</span>';
+            }
+          );
+        
+        // Add the formatted line
+        formattedJson += `<div class="indent-${indentLevel}">${escapedLine}</div>`;
+        
+        // Check if next indentation level should increase
+        if (line.includes('{') || line.includes('[')) {
+          indentLevel++;
+        }
+      }
+      
+      return formattedJson;
+    }
+
+    // Copy to clipboard functionality
+    function setupCopyButton() {
+      const copyBtn = document.getElementById('copyBtn');
+      if (copyBtn) {
+        copyBtn.addEventListener('click', function() {
+          // Get the pre element
+          const preElement = document.getElementById('responsePre');
+          
+          // Get JSON content without the button text
+          const jsonContent = preElement.innerText.replace(/Copy|Copied!|Failed/g, '').trim();
+          
+          // Use modern Clipboard API if available, fallback to execCommand
+          if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(jsonContent)
+              .then(() => {
+                copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                setTimeout(() => {
+                  copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+                }, 2000);
+              })
+              .catch(err => {
+                console.error('Failed to copy: ', err);
+                copyBtn.innerHTML = '<i class="fas fa-times"></i> Failed';
+                setTimeout(() => {
+                  copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+                }, 2000);
+              });
+          } else {
+            // Fallback for older browsers
+            const textarea = document.createElement('textarea');
+            textarea.value = jsonContent;
+            textarea.style.position = 'fixed';  // Avoid scrolling to bottom
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+            
+            try {
+              const successful = document.execCommand('copy');
+              copyBtn.innerHTML = successful ? 
+                '<i class="fas fa-check"></i> Copied!' : 
+                '<i class="fas fa-times"></i> Failed';
+            } catch (err) {
+              console.error('Unable to copy', err);
+              copyBtn.innerHTML = '<i class="fas fa-times"></i> Failed';
+            }
+            
+            document.body.removeChild(textarea);
+            setTimeout(() => {
+              copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+            }, 2000);
+          }
+        });
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", async function() {
+      try {
+        // Setup copy button
+        setupCopyButton();
+        
+        // Get session ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        let sessionId = urlParams.get('session_id');
+        
+        // Try to get payment details from sessionStorage first
+        let paymentResponse = null;
+        try {
+          const storedResponse = sessionStorage.getItem("paymentResponse");
+          if (storedResponse) {
+            paymentResponse = JSON.parse(storedResponse);
+            // If we have a stored session ID but no URL session ID, use the stored one
+            if (paymentResponse.session_id && !sessionId) {
+              sessionId = paymentResponse.session_id;
+            }
+          }
+        } catch (e) {
+          console.error("Error parsing stored response:", e);
+        }
+
+        // If still no session ID, try to get the latest one from the server
+        if (!sessionId) {
+          try {
+            const latestSessionResponse = await fetch('/api/latest-session');
+            if (latestSessionResponse.ok) {
+              const latestSessionData = await latestSessionResponse.json();
+              sessionId = latestSessionData.id;
+            }
+          } catch (e) {
+            console.error("Error fetching latest session ID:", e);
+          }
+        }
+
+        // If we have no payment response yet, try to get the latest one from the server
+        if (!paymentResponse) {
+          try {
+            const latestPaymentResponse = await fetch('/api/latest-payment-response');
+            if (latestPaymentResponse.ok) {
+              paymentResponse = await latestPaymentResponse.json();
+              // If we have no session ID yet but the payment response has one, use it
+              if (!sessionId && paymentResponse.session_id) {
+                sessionId = paymentResponse.session_id;
+              }
+            }
+          } catch (e) {
+            console.error("Error fetching latest payment response:", e);
+          }
+        }
+
+        let sessionDetails = null;
+        let paymentDetails = null;
+
+        if (sessionId) {
+          // Get session details
+          const sessionResponse = await fetch(`/api/payment-session/${sessionId}`);
+          if (!sessionResponse.ok) {
+            throw new Error('Session fetch failed');
+          }
+          sessionDetails = await sessionResponse.json();
+
+          // If payment_id exists, get payment details
+          if (sessionDetails.payment_id) {
+            const paymentResponse = await fetch(`/api/payment/${sessionDetails.payment_id}`);
+            if (!paymentResponse.ok) {
+              throw new Error('Payment fetch failed');
+            }
+            paymentDetails = await paymentResponse.json();
+          }
+
+          // Display a summary of the payment
+          const summaryElement = document.getElementById('summary');
+
+          if (paymentDetails) {
+            // Create a summary with key payment information
+            const totalAmount = (paymentDetails.amount / 100).toFixed(2);
+            const currency = paymentDetails.currency;
+            const paymentType = paymentDetails.source?.type || "card";
+            const status = paymentDetails.status;
+            const reference = paymentDetails.reference;
+            const processedDate = new Date(paymentDetails.processed_on || new Date()).toLocaleString();
+
+            // Generate a policy number
+            const policyNumber = `HD-${Math.floor(100000 + Math.random() * 900000)}-${new Date().getFullYear()}`;
+
+            summaryElement.innerHTML = `
+              <div class="detail-row">
+                <div class="detail-label">Amount</div>
+                <div class="detail-value">${currency} ${totalAmount}</div>
+              </div>
+              <div class="detail-row">
+                <div class="detail-label">Policy Number</div>
+                <div class="detail-value highlight">${policyNumber}</div>
+              </div>
+              <div class="detail-row">
+                <div class="detail-label">Payment Method</div>
+                <div class="detail-value">${paymentType.toUpperCase()}</div>
+              </div>
+              <div class="detail-row">
+                <div class="detail-label">Status</div>
+                <div class="detail-value">${status}</div>
+              </div>
+              <div class="detail-row">
+                <div class="detail-label">Reference</div>
+                <div class="detail-value">${reference}</div>
+              </div>
+              <div class="detail-row">
+                <div class="detail-label">Date</div>
+                <div class="detail-value">${processedDate}</div>
+              </div>
+              ${paymentDetails.description ? `
+              <div class="detail-row">
+                <div class="detail-label">Description</div>
+                <div class="detail-value description"><i class="fas fa-info-circle" style="margin-right: 8px;"></i>${paymentDetails.description}</div>
+              </div>` : ''}
+            `;
+
+            // Display formatted JSON response
+            const responseData = {
+              session_details: sessionDetails,
+              payment_details: paymentDetails
+            };
+            
+            document.getElementById('responsePre').innerHTML = formatJsonWithSyntaxHighlighting(responseData) + 
+              `<button class="copy-btn" id="copyBtn" title="Copy to clipboard">
+                <i class="fas fa-copy"></i> Copy
+              </button>`;
+            setupCopyButton(); // Reinitialize copy button
+          } else if (sessionDetails) {
+            // Just show basic session info
+            summaryElement.innerHTML = `
+              <div class="detail-row">
+                <div class="detail-label">Session ID</div>
+                <div class="detail-value">${sessionDetails.id}</div>
+              </div>
+              <div class="detail-row">
+                <div class="detail-label">Status</div>
+                <div class="detail-value">${sessionDetails.status}</div>
+              </div>
+              <div class="detail-row">
+                <div class="detail-label">Policy Number</div>
+                <div class="detail-value highlight">HD-${Math.floor(100000 + Math.random() * 900000)}-${new Date().getFullYear()}</div>
+              </div>
+            `;
+
+            // Display formatted session details
+            document.getElementById('responsePre').innerHTML = formatJsonWithSyntaxHighlighting({
+              session_details: sessionDetails
+            }) + 
+            `<button class="copy-btn" id="copyBtn" title="Copy to clipboard">
+              <i class="fas fa-copy"></i> Copy
+            </button>`;
+            setupCopyButton(); // Reinitialize copy button
+          }
+        } else if (paymentResponse) {
+          // If we have a payment response but no session details
+          const summaryElement = document.getElementById('summary');
+          
+          // Generate a policy number
+          const policyNumber = `HD-${Math.floor(100000 + Math.random() * 900000)}-${new Date().getFullYear()}`;
+          
+          summaryElement.innerHTML = `
+            <div class="detail-row">
+              <div class="detail-label">Payment ID</div>
+              <div class="detail-value">${paymentResponse.id || 'N/A'}</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Policy Number</div>
+              <div class="detail-value highlight">${policyNumber}</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Status</div>
+              <div class="detail-value">${paymentResponse.status || 'N/A'}</div>
+            </div>
+            ${paymentResponse.description ? `
+            <div class="detail-row">
+              <div class="detail-label">Description</div>
+              <div class="detail-value description"><i class="fas fa-info-circle" style="margin-right: 8px;"></i>${paymentResponse.description}</div>
+            </div>` : ''}
+          `;
+
+          // Display formatted payment response
+          document.getElementById('responsePre').innerHTML = formatJsonWithSyntaxHighlighting(paymentResponse) + 
+            `<button class="copy-btn" id="copyBtn" title="Copy to clipboard">
+              <i class="fas fa-copy"></i> Copy
+            </button>`;
+          setupCopyButton(); // Reinitialize copy button
+        } else {
+          // No payment data found
+          document.getElementById('responsePre').textContent = "No payment data found.";
+          document.getElementById('summary').innerHTML = '<p>No payment details available.</p>';
+        }
+      } catch (error) {
+        console.error("Error fetching payment details:", error);
+        document.getElementById('responsePre').textContent = "Error fetching payment details: " + error.message;
+        document.getElementById('summary').innerHTML = '<p>Error fetching payment details.</p>';
+      }
+    });
+  </script>
+</body>
+</html> 
