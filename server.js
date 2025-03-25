@@ -109,7 +109,7 @@ app.post("/api/create-payment-session", async (req, res) => {
         attempt_n3d: false
       },
       items: items || [],
-      enabled_payment_methods: enabled_payment_methods || ["card"],
+      enabled_payment_methods: enabled_payment_methods || ["card", "googlepay"],
       disabled_payment_methods: disabled_payment_methods || [],
       payment_method_configuration: payment_method_configuration || {}
     };
